@@ -1039,7 +1039,7 @@ em {
 .rw > span { display: inline-block; transform: translateY(112%); transition: transform 1s var(--ease-out); transition-delay: calc(var(--w, 0) * 70ms); }
 .rw-go .rw > span { transform: none; }
 
-/* ---- Reduced motion: keep soft fades so the page still feels alive, drop movement ---- */
+/* soft fades so the page still feels alive, drop movement  */
 @keyframes fadeIn { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
