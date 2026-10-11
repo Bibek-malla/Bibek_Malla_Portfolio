@@ -1,4 +1,4 @@
-/* ===== Fill these in. Anything left empty stays hidden. ===== */
+
 const CFG = { email: "thakuribibek990@gmail.com", linkedin: "https://www.linkedin.com/in/bibek-malla-515b2732a/", instagram: "", cv: "" };
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -11,7 +11,7 @@ show($("#cvBtn"), CFG.cv);
 if (CFG.email) { const m = $("#mail"); m.href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + CFG.email + "&su=Hello%20Bibek"; m.innerHTML = CFG.email + ' <span aria-hidden="true">↗</span>'; }
 $("#year").textContent = new Date().getFullYear();
 
-/* ---- Intro: "Hi, I'm / Bibek Malla. / Software Developer" rise out of a mask, one after another ---- */
+
 function split(el, start, step) {
   const label = el.textContent.trim(); let n = 0;
   const html = label.split(" ").map(word => {
@@ -45,7 +45,7 @@ const spy = new IntersectionObserver(es => es.forEach(e => {
 }), { rootMargin: "-40% 0px -55% 0px" });
 links.forEach(a => { const s = $(a.hash); if (s) spy.observe(s); });
 
-/* ---- Polish: scroll progress, scroll reveals, card spotlight ---- */
+/*  scroll progress, scroll reveals, card spotlight ---- */
 (() => {
   const bar = document.createElement("div"); bar.className = "progress"; bar.setAttribute("aria-hidden", "true"); document.body.prepend(bar);
   let ticking = false;
@@ -67,7 +67,7 @@ links.forEach(a => { const s = $(a.hash); if (s) spy.observe(s); });
   }), { threshold: .08 });
   targets.forEach(el => io.observe(el));
 
-  // Big headings: words rise out of a mask when they scroll into view
+  
   let w = 0;
   const wrap = node => {
     [...node.childNodes].forEach(n => {
