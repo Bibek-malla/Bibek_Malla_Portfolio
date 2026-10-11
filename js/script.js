@@ -44,3 +44,47 @@ const spy = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) links.forEach(a => a.classList.toggle("active", a.hash === "#" + e.target.id));
 }), { rootMargin: "-40% 0px -55% 0px" });
 links.forEach(a => { const s = $(a.hash); if (s) spy.observe(s); });
+
+/* ---- Polish: scroll progress, scroll reveals, card spotlight ---- */
+(() => {
+  const bar = document.createElement("div"); bar.className = "progress"; bar.setAttribute("aria-hidden", "true"); document.body.prepend(bar);
+  let ticking = false;
+  const update = () => { const max = document.documentElement.scrollHeight - innerHeight; bar.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`; ticking = false; };
+  addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true }); update();
+
+  // Cursor-following spotlight on project cards
+  $$(".project-card").forEach(card => card.addEventListener("pointermove", e => {
+    const r = card.getBoundingClientRect(); card.style.setProperty("--mx", (e.clientX - r.left) + "px"); card.style.setProperty("--my", (e.clientY - r.top) + "px");
+  }));
+
+  // Reveal sections, cards and groups as they scroll into view (staggered inside each row)
+  const targets = $$(".section-label, .about-grid > div, .project-card, .skill-group, .contact > div, .footer");
+  const seen = new Map();
+  targets.forEach(el => { const k = el.parentElement; const i = seen.get(k) || 0; seen.set(k, i + 1); el.style.setProperty("--i", Math.min(i, 5) % 3); el.classList.add("reveal"); });
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return; const el = e.target; el.classList.add("in"); io.unobserve(el);
+    setTimeout(() => el.classList.remove("reveal", "in"), 1200); // hand control back to the normal hover transitions
+  }), { threshold: .08 });
+  targets.forEach(el => io.observe(el));
+
+  // Big headings: words rise out of a mask when they scroll into view
+  let w = 0;
+  const wrap = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(t => {
+          if (!t) return;
+          if (/^\s+$/.test(t)) { frag.append(" "); return; }
+          const o = document.createElement("span"), i = document.createElement("span");
+          o.className = "rw"; i.textContent = t; i.style.setProperty("--w", w++); o.append(i); frag.append(o);
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) wrap(n);
+    });
+  };
+  const heads = $$(".about-title, .contact h2");
+  heads.forEach(h => { h.setAttribute("aria-label", h.textContent.trim()); w = 0; wrap(h); });
+  const hio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("rw-go"); hio.unobserve(e.target); } }), { threshold: .3 });
+  heads.forEach(h => hio.observe(h));
+})();
